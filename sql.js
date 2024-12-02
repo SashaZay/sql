@@ -6,8 +6,8 @@ var Database_URL = '10.0.7.100';
 var options = {
 	clientId: 'MyMQTT',
 	port: 1883,
-	username: 'homeas',
-	password: '5735675656',	
+	username: 'home',
+	password: '5555',	
 	keepalive: 60
 };
 
@@ -58,7 +58,7 @@ var mysql = require('mysql');
 var connection = mysql.createConnection({
 	host: Database_URL,
 	user: "root",
-	password: "5735675656",
+	password: "777",
 	database: "map"
 });
 
