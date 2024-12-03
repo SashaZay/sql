@@ -1,13 +1,13 @@
 var mqtt = require('mqtt');
 var Topic = 'msh/2/json/R38/!ea245858';
-var Broker_URL = 'mqtt://10.0.7.100';
-var Database_URL = '10.0.7.100';
+var Broker_URL = 'mqtt://localhost';
+var Database_URL = 'localhost';
 
 var options = {
 	clientId: 'MyMQTT',
 	port: 1883,
-	username: 'home',
-	password: '5555',	
+	username: 'homeas',
+	password: 'Home',
 	keepalive: 60
 };
 
@@ -33,9 +33,7 @@ function mqtt_reconnect(err){
 	client  = mqtt.connect(Broker_URL, options);
 };
 
-function after_publish(){
-	
-};
+function after_publish(){};
 
 function mqtt_messsageReceived(packet, message){
 	var message_str = message.toString();
@@ -50,20 +48,18 @@ function mqtt_messsageReceived(packet, message){
 	}
 };
 
-function mqtt_close(){
-	
-};
+function mqtt_close(){};
 
 var mysql = require('mysql');
 var connection = mysql.createConnection({
 	host: Database_URL,
 	user: "root",
-	password: "777",
+	password: "5735675656",
 	database: "map"
 });
 
 connection.connect(function(err){
-	if(err) throw err;
+	if(err){ throw err; }
 });
 
 function insert_message(message_str, packet){
@@ -72,18 +68,22 @@ function insert_message(message_str, packet){
 	var topic = 0;
 	var latitude = message_arr[10].split(',').shift();
 	var longitude = message_arr[11].split(',').shift();
+	var nomer = 0;
 	
 	connection.query("SELECT `nomer` FROM `location` WHERE `id`= ?", [uid], function(error, res){
-		if(error) throw error;
-		var nomer = res[0]['nomer'];
+		if(error){ throw error; }
+		if(res == ""){
+			nomer = 0;
+		} else {
+			nomer = res[0]['nomer'];
+		}
 		
 		var sql = "REPLACE INTO `location` (??,??,??,??,??) VALUES (?,?,?,?,?)";
 		var params = ['id', 'topic', 'latitude', 'longitude', 'nomer', uid, topic, latitude, longitude, nomer];
 		sql = mysql.format(sql, params);
 		
 		connection.query(sql, function (error, results){
-			if(error) throw error;
-			console.log("Message added: " + message_str);
+			if(error){ throw error; }
 		});
 	});
 };
